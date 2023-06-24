@@ -4,21 +4,29 @@ package restfakes
 import (
 	"sync"
 
-	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
 	"github.com/recipe-manager/cmd/recipe-manager/rest"
 )
 
 type FakeHandler struct {
-	AddMealStub        func(*firestore.Client) func(ctx *gin.Context)
+	AddMealStub        func() func(ctx *gin.Context)
 	addMealMutex       sync.RWMutex
 	addMealArgsForCall []struct {
-		arg1 *firestore.Client
 	}
 	addMealReturns struct {
 		result1 func(ctx *gin.Context)
 	}
 	addMealReturnsOnCall map[int]struct {
+		result1 func(ctx *gin.Context)
+	}
+	GetMealsStub        func() func(ctx *gin.Context)
+	getMealsMutex       sync.RWMutex
+	getMealsArgsForCall []struct {
+	}
+	getMealsReturns struct {
+		result1 func(ctx *gin.Context)
+	}
+	getMealsReturnsOnCall map[int]struct {
 		result1 func(ctx *gin.Context)
 	}
 	HealthCheckStub        func() func(ctx *gin.Context)
@@ -35,18 +43,17 @@ type FakeHandler struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeHandler) AddMeal(arg1 *firestore.Client) func(ctx *gin.Context) {
+func (fake *FakeHandler) AddMeal() func(ctx *gin.Context) {
 	fake.addMealMutex.Lock()
 	ret, specificReturn := fake.addMealReturnsOnCall[len(fake.addMealArgsForCall)]
 	fake.addMealArgsForCall = append(fake.addMealArgsForCall, struct {
-		arg1 *firestore.Client
-	}{arg1})
+	}{})
 	stub := fake.AddMealStub
 	fakeReturns := fake.addMealReturns
-	fake.recordInvocation("AddMeal", []interface{}{arg1})
+	fake.recordInvocation("AddMeal", []interface{}{})
 	fake.addMealMutex.Unlock()
 	if stub != nil {
-		return stub(arg1)
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
@@ -60,17 +67,10 @@ func (fake *FakeHandler) AddMealCallCount() int {
 	return len(fake.addMealArgsForCall)
 }
 
-func (fake *FakeHandler) AddMealCalls(stub func(*firestore.Client) func(ctx *gin.Context)) {
+func (fake *FakeHandler) AddMealCalls(stub func() func(ctx *gin.Context)) {
 	fake.addMealMutex.Lock()
 	defer fake.addMealMutex.Unlock()
 	fake.AddMealStub = stub
-}
-
-func (fake *FakeHandler) AddMealArgsForCall(i int) *firestore.Client {
-	fake.addMealMutex.RLock()
-	defer fake.addMealMutex.RUnlock()
-	argsForCall := fake.addMealArgsForCall[i]
-	return argsForCall.arg1
 }
 
 func (fake *FakeHandler) AddMealReturns(result1 func(ctx *gin.Context)) {
@@ -92,6 +92,59 @@ func (fake *FakeHandler) AddMealReturnsOnCall(i int, result1 func(ctx *gin.Conte
 		})
 	}
 	fake.addMealReturnsOnCall[i] = struct {
+		result1 func(ctx *gin.Context)
+	}{result1}
+}
+
+func (fake *FakeHandler) GetMeals() func(ctx *gin.Context) {
+	fake.getMealsMutex.Lock()
+	ret, specificReturn := fake.getMealsReturnsOnCall[len(fake.getMealsArgsForCall)]
+	fake.getMealsArgsForCall = append(fake.getMealsArgsForCall, struct {
+	}{})
+	stub := fake.GetMealsStub
+	fakeReturns := fake.getMealsReturns
+	fake.recordInvocation("GetMeals", []interface{}{})
+	fake.getMealsMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeHandler) GetMealsCallCount() int {
+	fake.getMealsMutex.RLock()
+	defer fake.getMealsMutex.RUnlock()
+	return len(fake.getMealsArgsForCall)
+}
+
+func (fake *FakeHandler) GetMealsCalls(stub func() func(ctx *gin.Context)) {
+	fake.getMealsMutex.Lock()
+	defer fake.getMealsMutex.Unlock()
+	fake.GetMealsStub = stub
+}
+
+func (fake *FakeHandler) GetMealsReturns(result1 func(ctx *gin.Context)) {
+	fake.getMealsMutex.Lock()
+	defer fake.getMealsMutex.Unlock()
+	fake.GetMealsStub = nil
+	fake.getMealsReturns = struct {
+		result1 func(ctx *gin.Context)
+	}{result1}
+}
+
+func (fake *FakeHandler) GetMealsReturnsOnCall(i int, result1 func(ctx *gin.Context)) {
+	fake.getMealsMutex.Lock()
+	defer fake.getMealsMutex.Unlock()
+	fake.GetMealsStub = nil
+	if fake.getMealsReturnsOnCall == nil {
+		fake.getMealsReturnsOnCall = make(map[int]struct {
+			result1 func(ctx *gin.Context)
+		})
+	}
+	fake.getMealsReturnsOnCall[i] = struct {
 		result1 func(ctx *gin.Context)
 	}{result1}
 }
@@ -154,6 +207,8 @@ func (fake *FakeHandler) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.addMealMutex.RLock()
 	defer fake.addMealMutex.RUnlock()
+	fake.getMealsMutex.RLock()
+	defer fake.getMealsMutex.RUnlock()
 	fake.healthCheckMutex.RLock()
 	defer fake.healthCheckMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

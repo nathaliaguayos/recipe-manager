@@ -13,3 +13,7 @@ test:
 lint:
 	go vet ./...
 .PHONY: lint
+
+htmlcoverage: test
+	go tool cover -html=coverage.txt
+.PHONY: htmlcoverage
