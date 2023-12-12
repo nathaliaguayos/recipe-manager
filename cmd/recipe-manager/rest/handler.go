@@ -1,38 +1,40 @@
 package rest
 
 import (
-	"cloud.google.com/go/firestore"
 	"context"
-	firebase "firebase.google.com/go"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/recipe-manager/cmd/recipe-manager/meals"
-	"net/http"
 )
 
 const (
-	projectId      string = "inisde-nutrition"
 	collectionName string = "meals"
 )
 
+//HealthCheck review the service status
 func (c *client) HealthCheck() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"Ok": true})
 	}
 }
 
+//AddMeal add a new meal into the firestore database
 func (c client) AddMeal() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		fsClient, err := c.createClient()
+		fsClient, err := c.CreateClient()
 		if err != nil {
 			c.Logger.Error().Err(err).Msg("error creating firestore client")
+			ctx.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 		defer fsClient.Close()
 		var meal meals.Meal
 		if err := ctx.BindJSON(&meal); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			ctx.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
@@ -44,6 +46,7 @@ func (c client) AddMeal() func(ctx *gin.Context) {
 			mealID, err := uuid.NewRandom()
 			if err != nil {
 				c.Logger.Error().Msg(fmt.Sprintf("failed to create meal ID %v", err))
+				ctx.AbortWithError(http.StatusInternalServerError, err)
 				return
 			}
 			meal.ID = mealID.String()
@@ -68,20 +71,36 @@ func (c client) AddMeal() func(ctx *gin.Context) {
 		ctx.JSON(http.StatusCreated, meal)
 	}
 }
-func (c *client) createClient() (*firestore.Client, error) {
-	ctx := context.Background()
-	conf := &firebase.Config{ProjectID: projectId}
-	app, err := firebase.NewApp(ctx, conf)
-	if err != nil {
-		c.Logger.Fatal().Err(err).Msg(fmt.Sprintf("error initializing firebase app: %v", err))
-		return nil, err
-	}
 
-	fsClient, err := app.Firestore(ctx)
-	if err != nil {
-		c.Logger.Fatal().Err(err).Msg(fmt.Sprintf("error creating firestore client: %v", err))
-		return nil, err
-	}
+//GetMeals retrieves all meals stored in the firestore database
+func (c client) GetMeals() func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		fsClient, err := c.CreateClient()
+		if err != nil {
+			c.Logger.Error().Err(err).Msg("error creating firestore client")
+			return
+		}
+		defer fsClient.Close()
+		
+		mealsCollection := fsClient.Collection(collectionName)
+		snapshot, err := mealsCollection.Documents(context.Background()).GetAll()
+		if err != nil {
+			c.Logger.Error().Err(err).Msg("error creating collection snapshot")
+			ctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
 
-	return fsClient, nil
+		var allMeals []meals.Meal
+		for _, doc := range snapshot {
+			var user meals.Meal
+			if err := doc.DataTo(&user); err != nil {
+				c.Logger.Error().Err(err).Msg("error reading data")
+				ctx.AbortWithError(http.StatusInternalServerError, err)
+				return
+			}
+			allMeals = append(allMeals, user)
+		}
+
+		ctx.JSON(http.StatusOK, allMeals)
+	}
 }

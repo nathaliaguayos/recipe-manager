@@ -2,15 +2,16 @@ package rest_test
 
 import (
 	"context"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/recipe-manager/cmd/recipe-manager/rest"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"net/http"
-	"net/http/httptest"
-	"os"
-	"testing"
 )
 
 func TestNew(t *testing.T) {
@@ -63,3 +64,6 @@ func TestAddMeal(t *testing.T) {
 	// check if the expected values are returned
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+func TestGetMeals(t *testing.T) {
+
+ }
