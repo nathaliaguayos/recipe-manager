@@ -3,7 +3,7 @@
 # Recipe Manager
 
 ## General Description
-This is a REST API that will allow to InSide Nutrition handle the recipe book for users.
+This is a REST API that will allow to store and retrieve recipes from the recipe book for users.
 
 The uses cases projected for this API are mainly:
 - **Health Check**: We can ask if the API is working fine trough the API `GET` endpoint `v1/`. *`Is working now`*

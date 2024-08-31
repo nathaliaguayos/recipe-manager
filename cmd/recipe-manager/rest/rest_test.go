@@ -45,6 +45,8 @@ func TestNew(t *testing.T) {
 }
 
 // NOTE: This works using the env var GOOGLE_APPLICATION_CREDENTIALS
+// you should export it: export GOOGLE_APPLICATION_CREDENTIALS=""
+//TODO: improve testing.
 func TestAddMeal(t *testing.T) {
 	// create a mock gin context
 	gin.SetMode(gin.TestMode)
