@@ -1,6 +1,6 @@
 module github.com/recipe-manager
 
-go 1.19
+go 1.23.0
 
 require (
 	cloud.google.com/go/firestore v1.9.0
@@ -35,6 +35,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.2 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect

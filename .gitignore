@@ -57,3 +57,4 @@ vendor/
 
 example.env
 local.env
+*.code-workspace
