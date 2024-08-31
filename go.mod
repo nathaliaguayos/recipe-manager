@@ -1,6 +1,6 @@
 module github.com/recipe-manager
 
-go 1.23.0
+go 1.23
 
 require (
 	cloud.google.com/go/firestore v1.9.0
