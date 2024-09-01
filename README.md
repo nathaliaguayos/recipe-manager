@@ -29,7 +29,15 @@ Core-sentinel uses the following environment variables in order to be up and run
 
 **Run the service locally**
 
-In order to run the service locally, simply add the value for *GOOGLE_APPLICATION_CREDENTIALS* at the [`local.env`](/local.env) file and run it by executing the following command: 
+In order to run the service locally, create the file `local.env` and add the following env vars:
+
+```
+export IN_PORT=8080
+export GIN_MODE=release
+export GOOGLE_APPLICATION_CREDENTIALS="firebase_config_file_url"
+```
+
+run it by executing the following command: 
 
 ```
 make run
@@ -44,9 +52,10 @@ make test
 ```
 
 ## Deployment
-`UNDER CONSTRUCTION`
+Once you create a PR to `main` a GitHub action will run the testing suite, if it succeed, then you will be able to merge the PR.
 
-1. After merging a PR for this repo, you should tag it with the version of the [`VERSION`](/internal/version/VERSION) file in `develop` branch
+
+1. After merging a PR for this repo, you should tag it with the version of the [`VERSION`](/internal/version/VERSION) file in `main` branch
 ```sh
 $ git checkout main
 $ git tag $(cat internal/verison/VERSION)
@@ -55,6 +64,7 @@ $ git tag $(cat internal/verison/VERSION)
 ```sh
 $ git push origin $(cat internal/verison/VERSION)
 ```
+
 3. The GitHub workflow specified in `.github/workflows/build-production.yml` file will run, you can access to
 [GitHub Workflow](https://github.com/recipe-manager/actions) to see the progress - `UNDER CONSTRUCTION`
 4. After a successful pipeline execution, a new Docker image for this service will be created -
