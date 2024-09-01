@@ -1,6 +1,5 @@
 ## Description
-
-Please include a summary of the change and which issue is fixed. Also include relevant motivation and context.
+<!-- Please include a summary of the change and which issue is fixed. Also include relevant motivation and context. -->
 
 - **Issue #:** # (if applicable)
 - **Related PRs:** # (if applicable)
@@ -24,6 +23,9 @@ Please check the options that apply:
 - [ ] My changes generate no new warnings.
 - [ ] I have added tests that prove my fix is effective or that my feature works.
 - [ ] New and existing tests pass.
+
+## How have you test it?
+<!-- Sometimes is just a unit-test. But also could be a series of steps to reproduce the issue that the PR is addressing. Try to be as  informative as you can! -->
 
 ## Screenshots (if applicable)
 
